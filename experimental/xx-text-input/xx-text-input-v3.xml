@@ -491,6 +491,11 @@
       <description summary="action">
         A possible action to perform on a text input.
       </description>
+      <entry name="none" value="1">
+        <description summary="no action">
+          This enum value exists only to provide a default to make double-buffering implementation easier. It should not be used explicitly.
+        </description>
+      </entry>
       <!-- Notably missing: moving cursor, deleting and setting a selection. They are nicer to use as part of the text manipulation interface: ranges can be selected there.
       Exceptions: the IME doesn't know where lines start or end. The IME will not get to see the entire 4MB document so it can't select all through the text interface. But this doesn't seem urgent. -->
 

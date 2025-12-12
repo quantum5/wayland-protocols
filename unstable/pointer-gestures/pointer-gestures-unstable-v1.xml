@@ -61,7 +61,7 @@
 
   </interface>
 
-  <interface name="zwp_pointer_gesture_swipe_v1" version="2">
+  <interface name="zwp_pointer_gesture_swipe_v1" version="3">
     <description summary="a swipe gesture object">
       A swipe gesture object notifies a client about a multi-finger swipe
       gesture detected on an indirect input device such as a touchpad.
@@ -124,7 +124,7 @@
     </event>
   </interface>
 
-  <interface name="zwp_pointer_gesture_pinch_v1" version="2">
+  <interface name="zwp_pointer_gesture_pinch_v1" version="3">
     <description summary="a pinch gesture object">
       A pinch gesture object notifies a client about a multi-finger pinch
       gesture detected on an indirect input device such as a touchpad.

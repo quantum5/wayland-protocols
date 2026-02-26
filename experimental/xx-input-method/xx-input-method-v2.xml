@@ -218,7 +218,7 @@
     </event>
 
     <enum name="protocol_compat" since="4">
-      <description summary="protocol comatibility value">
+      <description summary="protocol compatibility value">
         Tells the input method client what kinds of events the text input client supports.
       </description>
       <entry name="text_input_v3" value="0x0" summary="zwp-text-input-v3 semantics"/>
@@ -454,7 +454,7 @@
         the time of its creation.
 
         The compositor must issue this request when the object is no longer
-        useable, e.g. due to seat removal.
+        usable, e.g. due to seat removal.
 
         The input method context becomes inert and should be destroyed after
         deactivation is handled. Any further requests and events except for the
@@ -517,7 +517,7 @@
       7. client (Cl): ack_configure()
       8. Cl: wl_surface.commit()
       
-      When the corresponding input_method receives a commited .deactivate event, the popup gets destroyed and becomes invalid and its surface gets unmapped.
+      When the corresponding input_method receives a committed .deactivate event, the popup gets destroyed and becomes invalid and its surface gets unmapped.
 
       The client must not destroy the underlying wl_surface while the
       xx_input_popup_surface_v2 object exists.
@@ -566,7 +566,7 @@
         
         2. Complicate some and mandate .done after some .configures
         
-        Rejected because the different path for syncing (on .confgure or on .done) are difficult to explain and sound like a source of bugs. Also, this ended up needing additional events.
+        Rejected because the different path for syncing (on .configure or on .done) are difficult to explain and sound like a source of bugs. Also, this ended up needing additional events.
         
         3. Simplify a lot and remove .configure in favor of relying on .done entirely
         
@@ -591,7 +591,7 @@
         This request notifies the compositor that the client updated its surface in response to a configure sequence.
 
         The purpose of this request is to synchronize the updates of the surface geometry with the surface contents.
-        For example, when the compositor assigns a size larger than prevously, the client must fill the additional space before the popup gets displayed to the user with the new size. When the compositor receives .ack_configure, it can proceed to draw the new size.
+        For example, when the compositor assigns a size larger than previously, the client must fill the additional space before the popup gets displayed to the user with the new size. When the compositor receives .ack_configure, it can proceed to draw the new size.
 
         .ack_configure should be sent after every submitted configure sequence, passing along the serial received in it.
         
@@ -720,7 +720,7 @@
     </request>
 
     <enum name="anchor">
-      <entry name="none" value="0" summary="no edge, specfies center"/>
+      <entry name="none" value="0" summary="no edge, specifies center"/>
       <entry name="top" value="1"/>
       <entry name="bottom" value="2"/>
       <entry name="left" value="3"/>

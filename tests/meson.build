@@ -22,10 +22,6 @@ endforeach
 add_languages('c', 'cpp', native: false)
 replace = find_program('replace.py')
 
-extra_linker_flags = meson.get_compiler('c').get_supported_link_arguments([
-	'-Wl,--unresolved-symbols=ignore-all',
-])
-
 # Some protocols reference interfaces defined in other protocols.
 # Map each such protocol to the protocols it depends on, so we can
 # link the dependency's generated code into the test executable.
@@ -170,7 +166,6 @@ foreach protocol_file : protocol_files
 			server_header,
 			code,
 		] + dep_code,
-		link_args: extra_linker_flags,
 		dependencies: libwayland,
 		c_args: [
 			'-std=c99',
@@ -198,8 +193,7 @@ foreach protocol_file : protocol_files
 				client_header,
 				server_header,
 			] + dep_code,
-			link_args: extra_linker_flags,
-				dependencies: libwayland,
+					dependencies: libwayland,
 			cpp_args: [
 				'-Wall',
 				'-Werror',

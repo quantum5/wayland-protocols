@@ -26,6 +26,13 @@ extra_linker_flags = meson.get_compiler('c').get_supported_link_arguments([
 	'-Wl,--unresolved-symbols=ignore-all',
 ])
 
+# First pass: generate scanner outputs for each protocol and record the
+# generated custom_targets for use when building test executables.
+protocol_code = {}
+protocol_client_header = {}
+protocol_server_header = {}
+protocol_replace_command = {}
+
 foreach protocol_file : protocol_files
 	xml_file = fs.name(protocol_file)
 	xml_components = xml_file.split('.')
@@ -75,7 +82,10 @@ foreach protocol_file : protocol_files
 		install: false,
 	)
 
-	replace_command = [
+	protocol_code += {protocol_file: code}
+	protocol_client_header += {protocol_file: client_header}
+	protocol_server_header += {protocol_file: server_header}
+	protocol_replace_command += {protocol_file: [
 		replace,
 		'@INPUT@',
 		'@OUTPUT@',
@@ -83,7 +93,15 @@ foreach protocol_file : protocol_files
 		client_header.full_path(),
 		'PROTOCOL_SERVER_INCLUDE_FILE',
 		server_header.full_path(),
-	]
+	]}
+endforeach
+
+# Second pass: build test executables.
+foreach protocol_file : protocol_files
+	client_header = protocol_client_header[protocol_file]
+	server_header = protocol_server_header[protocol_file]
+	code = protocol_code[protocol_file]
+	replace_command = protocol_replace_command[protocol_file]
 
 	# Check that header can be included by a pedantic C99 compiler
 	test_name = 'test-build-pedantic-@0@'.format(protocol_file.underscorify())

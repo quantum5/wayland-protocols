@@ -26,6 +26,49 @@ extra_linker_flags = meson.get_compiler('c').get_supported_link_arguments([
 	'-Wl,--unresolved-symbols=ignore-all',
 ])
 
+# Some protocols reference interfaces defined in other protocols.
+# Map each such protocol to the protocols it depends on, so we can
+# link the dependency's generated code into the test executable.
+protocol_deps = {
+	'unstable/xdg-decoration/xdg-decoration-unstable-v1.xml': [
+		'stable/xdg-shell/xdg-shell.xml',
+	],
+	'staging/xdg-dialog/xdg-dialog-v1.xml': [
+		'stable/xdg-shell/xdg-shell.xml',
+	],
+	'staging/xdg-session-management/xdg-session-management-v1.xml': [
+		'stable/xdg-shell/xdg-shell.xml',
+	],
+	'staging/xdg-toplevel-drag/xdg-toplevel-drag-v1.xml': [
+		'stable/xdg-shell/xdg-shell.xml',
+	],
+	'staging/xdg-toplevel-icon/xdg-toplevel-icon-v1.xml': [
+		'stable/xdg-shell/xdg-shell.xml',
+	],
+	'staging/xdg-toplevel-tag/xdg-toplevel-tag-v1.xml': [
+		'stable/xdg-shell/xdg-shell.xml',
+	],
+	'experimental/xx-session-management/xx-session-management-v1.xml': [
+		'stable/xdg-shell/xdg-shell.xml',
+	],
+	'experimental/xx-zones/xx-zones-v1.xml': [
+		'stable/xdg-shell/xdg-shell.xml',
+	],
+	'staging/cursor-shape/cursor-shape-v1.xml': [
+		'stable/tablet/tablet-v2.xml',
+	],
+	'staging/ext-image-capture-source/ext-image-capture-source-v1.xml': [
+		'staging/ext-foreign-toplevel-list/ext-foreign-toplevel-list-v1.xml',
+	],
+	'staging/ext-image-copy-capture/ext-image-copy-capture-v1.xml': [
+		'staging/ext-image-capture-source/ext-image-capture-source-v1.xml',
+		'staging/ext-foreign-toplevel-list/ext-foreign-toplevel-list-v1.xml',
+	],
+	'experimental/xx-keyboard-filter/xx-keyboard-filter-v1.xml': [
+		'experimental/xx-input-method/xx-input-method-v2.xml',
+	],
+}
+
 # First pass: generate scanner outputs for each protocol and record the
 # generated custom_targets for use when building test executables.
 protocol_code = {}
@@ -96,12 +139,19 @@ foreach protocol_file : protocol_files
 	]}
 endforeach
 
-# Second pass: build test executables.
+# Second pass: build test executables, linking in dependency code.
 foreach protocol_file : protocol_files
 	client_header = protocol_client_header[protocol_file]
 	server_header = protocol_server_header[protocol_file]
 	code = protocol_code[protocol_file]
 	replace_command = protocol_replace_command[protocol_file]
+
+	dep_code = []
+	if protocol_file in protocol_deps
+		foreach dep : protocol_deps[protocol_file]
+			dep_code += [protocol_code[dep]]
+		endforeach
+	endif
 
 	# Check that header can be included by a pedantic C99 compiler
 	test_name = 'test-build-pedantic-@0@'.format(protocol_file.underscorify())
@@ -118,8 +168,8 @@ foreach protocol_file : protocol_files
 			test_source,
 			client_header,
 			server_header,
-			code
-		],
+			code,
+		] + dep_code,
 		link_args: extra_linker_flags,
 		dependencies: libwayland,
 		c_args: [
@@ -147,9 +197,9 @@ foreach protocol_file : protocol_files
 				test_source,
 				client_header,
 				server_header,
-			],
+			] + dep_code,
 			link_args: extra_linker_flags,
-			dependencies: libwayland,
+				dependencies: libwayland,
 			cpp_args: [
 				'-Wall',
 				'-Werror',

@@ -22,49 +22,6 @@ endforeach
 add_languages('c', 'cpp', native: false)
 replace = find_program('replace.py')
 
-# Some protocols reference interfaces defined in other protocols.
-# Map each such protocol to the protocols it depends on, so we can
-# link the dependency's generated code into the test executable.
-protocol_deps = {
-	'unstable/xdg-decoration/xdg-decoration-unstable-v1.xml': [
-		'stable/xdg-shell/xdg-shell.xml',
-	],
-	'staging/xdg-dialog/xdg-dialog-v1.xml': [
-		'stable/xdg-shell/xdg-shell.xml',
-	],
-	'staging/xdg-session-management/xdg-session-management-v1.xml': [
-		'stable/xdg-shell/xdg-shell.xml',
-	],
-	'staging/xdg-toplevel-drag/xdg-toplevel-drag-v1.xml': [
-		'stable/xdg-shell/xdg-shell.xml',
-	],
-	'staging/xdg-toplevel-icon/xdg-toplevel-icon-v1.xml': [
-		'stable/xdg-shell/xdg-shell.xml',
-	],
-	'staging/xdg-toplevel-tag/xdg-toplevel-tag-v1.xml': [
-		'stable/xdg-shell/xdg-shell.xml',
-	],
-	'experimental/xx-session-management/xx-session-management-v1.xml': [
-		'stable/xdg-shell/xdg-shell.xml',
-	],
-	'experimental/xx-zones/xx-zones-v1.xml': [
-		'stable/xdg-shell/xdg-shell.xml',
-	],
-	'staging/cursor-shape/cursor-shape-v1.xml': [
-		'stable/tablet/tablet-v2.xml',
-	],
-	'staging/ext-image-capture-source/ext-image-capture-source-v1.xml': [
-		'staging/ext-foreign-toplevel-list/ext-foreign-toplevel-list-v1.xml',
-	],
-	'staging/ext-image-copy-capture/ext-image-copy-capture-v1.xml': [
-		'staging/ext-image-capture-source/ext-image-capture-source-v1.xml',
-		'staging/ext-foreign-toplevel-list/ext-foreign-toplevel-list-v1.xml',
-	],
-	'experimental/xx-keyboard-filter/xx-keyboard-filter-v1.xml': [
-		'experimental/xx-input-method/xx-input-method-v2.xml',
-	],
-}
-
 # First pass: generate scanner outputs for each protocol and record the
 # generated custom_targets for use when building test executables.
 protocol_code = {}

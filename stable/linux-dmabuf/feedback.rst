@@ -169,6 +169,7 @@ linux-dmabuf feedback implementation nodes for version 6
 
 With version 6 of the protocol, most of the logic described for version 4 still
 stands, with a few exceptions:
+
 - the main device is no longer sent. If the client needs an equivalent to the
   main device, the target device of the first tranche of the default feedback
   with the ``sampling`` flag can be used.

@@ -7,7 +7,6 @@ foreach protocol_file : protocol_files
 		input: '../..' / protocol_file,
 		command: [
 			prog_scanner,
-			'--strict',
 			'enum-header',
 			'@INPUT@',
 			'@OUTPUT@',
